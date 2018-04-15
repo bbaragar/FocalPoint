@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Modal, Text, TouchableHighlight, View} from 'react-native';
-import {FocusSetModal }from '../Components/FocusSetModal'
+import AddTaskModal from '../Components/AddTaskModal'
 
 
 class test extends React.Component {
@@ -35,7 +35,7 @@ class test extends React.Component {
           onRequestClose={() => {
             alert('Modal has been closed.');
           }}>
-          <FocusSetModal closeModal={this.closeMod}></FocusSetModal>
+          <AddTaskModal closeModal={this.closeMod}></AddTaskModal>
         </Modal>
 
         <TouchableHighlight

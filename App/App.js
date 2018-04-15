@@ -30,7 +30,7 @@ const TopLevelNavigator = StackNavigator(
 
   },
   {
-    initialRouteName: 'Test'
+    initialRouteName: 'Tasks'
   }
 )
 
