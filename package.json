@@ -1,0 +1,41 @@
+{
+  "name": "FocalPoint",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@types/react": "^16.3.9",
+    "prop-types": "latest",
+    "react": "16.3.0-alpha.1",
+    "react-native": "0.54.3",
+    "react-native-circular-progress": "^0.2.0",
+    "react-native-linear-gradient": "^2.4.0",
+    "react-native-progress": "^3.4.0",
+    "react-native-shadow": "^1.2.2",
+    "react-native-svg": "^6.3.1",
+    "react-native-vector-icons": "^4.5.0",
+    "react-native-wheel-picker-android": "^1.1.1",
+    "react-navigation": "1.5.2",
+    "react-scripts": "^1.1.4",
+    "react-timer-mixin": "latest"
+  },
+  "devDependencies": {
+    "babel-jest": "22.4.3",
+    "babel-preset-react-native": "4.0.0",
+    "eslint": "^4.19.1",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.7.0",
+    "eslint-plugin-react": "^7.7.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "jest": "22.4.3",
+    "react-test-renderer": "16.3.0-alpha.1"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
