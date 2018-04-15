@@ -39,9 +39,15 @@ export default class AddTaskModal extends React.Component {
 
         <View style={styles.modalCard}>
 
+          <View style={{flex:1}}>
 
 
 
+
+
+
+
+          </View>
           <View style={{ flex:1, flexDirection:'row', alignItems: 'center', justifyContent: 'space-around'}}>
             <TouchableHighlight
               style={styles.sButton}
@@ -99,7 +105,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.backgroundGradLow,
     borderRadius: 12,
     // borderWidth: 2,
-    height: 400,
+    height: 450,
     padding: 10,
     width: sWidth - 60,
     zIndex: 10
