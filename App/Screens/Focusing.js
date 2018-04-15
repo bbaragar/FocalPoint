@@ -38,7 +38,7 @@ class focusingSC extends React.Component {
       seconds:0,
 
       nextText:" Until Break",
-      modalVisible: false,
+      modalVisible: true,
 
     }
   }

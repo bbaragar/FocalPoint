@@ -7,12 +7,12 @@ import {
   View,
   Platform,
   ViewPropTypes,
-  TouchableHighlight, ScrollView, Touchable
+  TouchableHighlight, ScrollView, Touchable, TextInput
 } from 'react-native'
 import {Colors} from '../Assets/styleConfig'
 import {Task} from '../dataStructs/Task'
 import PropTypes from 'prop-types';
-import {WheelPicker} from 'react-native-wheel-picker-android';
+import { DatePicker, WheelPicker } from 'react-native-wheel-picker-android'
 import FadeInView from './FadeInView'
 
 var sWidth = Dimensions.get('window').width
@@ -20,6 +20,14 @@ var sLength = Dimensions.get('window').height
 
 
 export default class AddTaskModal extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      nameIn:'',
+      descriptIn:'',
+    }
+  };
+
 
   modHandler(){
     this.props.closeModal()
@@ -38,17 +46,41 @@ export default class AddTaskModal extends React.Component {
         </TouchableHighlight>
 
         <View style={styles.modalCard}>
+          <ScrollView style={{ width: sWidth - 70, borderBottomWidth:2}}
+                      keyboardShouldPersistTaps={'handled'}>
+            <View style={{flex:1, marginHorizontal:6,}}>
+              <TextInput
+                style={{height: 40, backgroundColor: '#e6e6e6',}}
+                underlineColorAndroid={'transparent'}
+                autoFocus={true}
+                placeholder={"Name"}
+                onChangeText={(nameIn) => this.setState({nameIn})}
+                onSubmitEditing={() => { this.descInput.focus(); }}
+                value={this.state.nameIn}>
+              </TextInput>
+              <Text> </Text>
+              <TextInput
+                ref={(input) => { this.descInput = input; }}
+                style={{ height: 40, backgroundColor: '#e6e6e6',}}
+                underlineColorAndroid={'transparent'}
+                placeholder={"description"}
+                onChangeText={(descriptIn) => this.setState({descriptIn})}
+                value={this.state.descriptIn}>
+              </TextInput>
+              <Text> </Text>
+              {/*
+                date picker
+                time picker
 
-          <View style={{flex:1}}>
+                make expanding from single line
+                 */}
 
 
 
 
-
-
-
-          </View>
-          <View style={{ flex:1, flexDirection:'row', alignItems: 'center', justifyContent: 'space-around'}}>
+            </View>
+          </ScrollView>
+          <View style={{ flexDirection:'row', alignItems: 'center', justifyContent: 'space-around', marginTop:10}}>
             <TouchableHighlight
               style={styles.sButton}
               onPress={ ()=> {this.modHandler()}}
@@ -74,6 +106,8 @@ export default class AddTaskModal extends React.Component {
 const styles = StyleSheet.create({
   protoModal: {
     flex: 1,
+    top:0,
+    bottom:0,
     alignItems: 'center',
     justifyContent: 'center',
     width: sWidth,
@@ -86,7 +120,7 @@ const styles = StyleSheet.create({
   },
 
   clickAround:{
-    position:'absolute',
+    //position:'absolute',
     width: sWidth,
     height:sLength,
     alignItems: 'center',
@@ -98,6 +132,9 @@ const styles = StyleSheet.create({
   },
 
   modalCard: {
+    top:50,
+   paddingTop:30,
+    height:sLength-150,
     position:'absolute',
     flexDirection:'column',
     elevation: 16,
@@ -105,13 +142,15 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.backgroundGradLow,
     borderRadius: 12,
     // borderWidth: 2,
-    height: 450,
+   // height: 300,
     padding: 10,
     width: sWidth - 60,
     zIndex: 10
   },
 
   sButton:{
+
+    //bottom:10,
     borderColor: Colors.iconPrimary,
     borderWidth: 2,
     marginHorizontal:20,
