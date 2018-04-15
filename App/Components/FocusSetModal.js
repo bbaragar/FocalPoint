@@ -12,7 +12,6 @@ import {
 } from 'react-native'
 import {Colors} from '../Assets/styleConfig'
 import {Task} from '../dataStructs/Task'
-import {vMemory} from '../App'
 import PropTypes from 'prop-types';
 import {WheelPicker} from 'react-native-wheel-picker-android';
 import FadeInView from './FadeInView'
@@ -29,7 +28,7 @@ const  forMinutes= ['0','1','2','3','4','5','6','7','8','9','10','11','12','13',
 
 
 
-export class FocusSetModal extends React.Component {
+export default class FocusSetModal extends React.Component {
   constructor (props) {
     super(props)
     this.state = {

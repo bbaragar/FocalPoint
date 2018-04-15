@@ -12,7 +12,7 @@ import LinearGradient from "react-native-linear-gradient";
 import {NavMenu} from "../Components/navMenu";
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import ProgressBar from 'react-native-progress/Bar';
-import { FocusSetModal } from '../Components/FocusSetModal'
+import  FocusSetModal from '../Components/FocusSetModal'
 
 var sWidth = Dimensions.get('window').width;
 var sLength = Dimensions.get('window').length;
