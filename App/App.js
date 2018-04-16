@@ -48,7 +48,7 @@ export default class App extends React.Component {
     global.startTime;
     global.endTime;
     global.nextText = ' Until Break' ;
-    
+
 
   }
 
