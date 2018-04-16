@@ -44,7 +44,6 @@ const testLength = 5400;
 export default class App extends React.Component {
 
   constructor(){
-
     super();
     global.isSet = false;
     global.startTime;
