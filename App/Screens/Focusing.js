@@ -32,7 +32,6 @@ class focusingSC extends React.Component {
     super(props);
 
       //this.closeMod=this.closeMod.bind(this);
-
       this.state = {
           finished: false,
           elapsed:0,
