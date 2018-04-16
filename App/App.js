@@ -46,7 +46,6 @@ export default class App extends React.Component {
   constructor(){
 
     super();
-
     global.isSet = false;
     global.startTime;
     global.endTime;
