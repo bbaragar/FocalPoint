@@ -11,6 +11,8 @@ buck-out/
 ### ReactNative.Gradle Stack ###
 .gradle
 **/build/
+*.jks
+*gradle.properties
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -43,6 +45,7 @@ out/
 # Gradle files
 .gradle/
 build/
+build.gradle
 
 # Local configuration file (sdk path, etc)
 local.properties
