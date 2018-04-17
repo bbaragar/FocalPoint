@@ -157,7 +157,6 @@ class focusingSC extends React.Component {
   }
 
   getFormattedTime(inSeconds){
-
     const totalSeconds = Math.round(inSeconds);
 
     let seconds = parseInt(totalSeconds % 60, 10);
