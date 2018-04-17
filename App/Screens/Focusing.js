@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import {
   Animated,
   StyleSheet,
+  AsyncStorage,
   Text,
   Dimensions,
+    Alert,
   View,
   TouchableHighlight, Modal,
 } from 'react-native'
@@ -14,41 +16,108 @@ import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import ProgressBar from 'react-native-progress/Bar';
 import  FocusSetModal from '../Components/FocusSetModal'
 
+var hailMary;
 var sWidth = Dimensions.get('window').width;
 var sLength = Dimensions.get('window').length;
+
+var storageSecondsString = " k";
+var storageSecondsInt = 0;
 
 class focusingSC extends React.Component {
   static navigationOptions = { header: null };
   timer=null;
 
-
   constructor(props) {
     super(props);
-    this.closeMod=this.closeMod.bind(this);
 
-    //TODO Switch "global.-----" to using async storage or another global writable variable
+    //this.closeMod=this.closeMod.bind(this);
     this.state = {
-      finished: false,
-      startTime: global.startTime,
-      endTime: global.endTime,
-      difference: global.endTime-global.startTime,
-      elapsed:0,
-      percentFill: 0,
-      Remaining: 0,
-      seconds:0,
+        finished: false,
+        elapsed:0,
+        startTime: Math.floor(Date.now() / 1000),
+        endTime: Math.floor(Date.now() / 1000),
+        difference: (Math.floor(Date.now() / 1000)) - (Math.floor(Date.now() / 1000)),
+        percentFill: 0,
+        Remaining: 0,
+        seconds:0,
+        'Time': this.grabStorage(),
+        nextText:" Until Break",
+        modalVisible: !global.pickerClosed,
+    };
 
-      nextText:" Until Break",
-      modalVisible: true,
+    storageSecondsString = JSON.stringify(this.grabStorage());
 
+    storageSecondsString = JSON.stringify(this.state.Time);
+    storageSecondsInt = 0;
+
+    var decimalPlace = 1;
+    for (var i = 0; i < storageSecondsString.length; i++) {
+        decimalPlace = 1;
+        if (!Number.isNaN(parseInt(storageSecondsString.charAt(i)))) {
+            for (var j = i + 1; j < storageSecondsString.length; j++) {
+                if (Number.isNaN(parseInt(storageSecondsString.charAt(j)))) {
+                    break;
+                }
+                else {
+                    decimalPlace *= 10;
+                }
+            }
+            storageSecondsInt += (parseInt(storageSecondsString.charAt(i))) * decimalPlace;
+        }
     }
+    this.state.Time = storageSecondsInt;
+    this.state.endTime = this.state.Time + Math.floor(Date.now() / 1000);
+    this.state.startTime = Math.floor(Date.now() / 1000);
+    this.state.difference = this.state.endTime - this.state.startTime;
+
+      //TODO Switch "global.-----" to using async storage or another global writable variable
   }
 
+  async grabStorage() {
+      this.setState({
+          'Time': await AsyncStorage.getItem('Time'),
+          finished: false,
+          elapsed: 0,
+          difference: this.state.difference,
+          startTime: this.state.startTime,
+          endTime: this.state.endTime,
+          percentFill: 0,
+          Remaining: 0,
+          seconds: 0,
+          nextText: "Until Break",
+          modalVisible: !global.pickerClosed,
+      });
+
+      hailMary = JSON.stringify(JSON.parse(this.state.Time));
+      storageSecondsString = JSON.stringify(hailMary);
+
+      storageSecondsString = JSON.stringify(this.state.Time);
+      storageSecondsInt = 0;
+
+      var decimalPlace = 1;
+      for (var i = 0; i < storageSecondsString.length; i++) {
+          decimalPlace = 1;
+          if (!Number.isNaN(parseInt(storageSecondsString.charAt(i)))) {
+              for (var j = i + 1; j < storageSecondsString.length; j++) {
+                  if (Number.isNaN(parseInt(storageSecondsString.charAt(j)))) {
+                      break;
+                  }
+                  else {
+                      decimalPlace *= 10;
+                  }
+              }
+              storageSecondsInt += (parseInt(storageSecondsString.charAt(i))) * decimalPlace;
+          }
+      }
+      this.state.Time = storageSecondsInt;
+      this.state.endTime = this.state.Time + Math.floor(Date.now() / 1000);
+      this.state.startTime = Math.floor(Date.now() / 1000);
+      this.state.difference = this.state.endTime - this.state.startTime;
+      hailMary = storageSecondsInt;
+      return hailMary;
+  }
   componentDidMount() {
-    timer = setInterval(this.tick.bind(this), 1000)
-
-
-
-
+    timer = setInterval(this.tick.bind(this), 1000);
     this.tick();
   }
 
@@ -61,7 +130,6 @@ class focusingSC extends React.Component {
   }
 
   tick() {
-
 
     let timeStamp = Math.floor(Date.now()/1000);
 
@@ -78,30 +146,27 @@ class focusingSC extends React.Component {
       this.toggleFinished();
     }
 
-
-
     this.setState({
       percentFill: percent,
       elapsed: elapsed,
       Remaining:remaining,
       seconds: seconds,
-    })
+    });
+
+  await AsyncStorage.setItem('Time', JSON.stringify(this.state.Remaining));
 
   }
 
   getFormattedTime(inSeconds){
-
     const totalSeconds = Math.round(inSeconds);
 
     let seconds = parseInt(totalSeconds % 60, 10);
     let minutes = parseInt(totalSeconds / 60, 10) % 60;
     let hours = parseInt(totalSeconds / 3600, 10);
 
-    seconds = seconds < 10 ? ':0' + seconds : ':'+ seconds; ;
+    seconds = seconds < 10 ? ':0' + seconds : ':'+ seconds;
     minutes = minutes < 10 ? '0' + minutes : minutes;
     //hours = hours < 10 ? '0' + hours  : hours;
-
-
 
     return hours + ':' + minutes;
   }
@@ -109,6 +174,7 @@ class focusingSC extends React.Component {
   countDown(){
 
     if(this.state.finished){
+        global.pickerClosed = false;
       return "0:00"
     }else {
       return this.getFormattedTime(this.state.Remaining);
@@ -117,17 +183,21 @@ class focusingSC extends React.Component {
 
 
   toggleFinished() {
-    clearInterval(timer);
+    clearInterval(this.timer);
     this.setState({
       finished: true,
     });
+    global.pickerClosed = false;
+    AsyncStorage.setItem('AlreadySet', 'false');
   }
+
 
   showMod() {
     this.setState({modalVisible: true});
   }
 
   closeMod() {
+
     this.setState({modalVisible: false});
   }
 

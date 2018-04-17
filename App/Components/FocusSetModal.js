@@ -4,6 +4,7 @@ import {
   Animated,
   StyleSheet,
   Text,
+  AsyncStorage,
   Dimensions,
   View,
   Platform,
@@ -15,22 +16,22 @@ import {Task} from '../dataStructs/Task'
 import PropTypes from 'prop-types';
 import {WheelPicker} from 'react-native-wheel-picker-android';
 import FadeInView from './FadeInView'
+import NavigationService from "../NavigationService";
 
-var sWidth = Dimensions.get('window').width
-var sLength = Dimensions.get('window').height
-
+var sWidth = Dimensions.get('window').width;
+var sLength = Dimensions.get('window').height;
+var testSeconds = 0;
 
 const hourList= ['12', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'];
-const  minuteList= ['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35','36','37','38','39','40','41','42','43','44','45','46','47','48','49','50','51','52','53','54','55','56','57','58','59', ];
-const  morningOrNight= ['AM', 'PM'];
-const  forHours= ['0','1','2','3','4','5','6','7','8','9','10','11','12',];
-const  forMinutes= ['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35','36','37','38','39','40','41','42','43','44','45','46','47','48','49','50','51','52','53','54','55','56','57','58','59',];
-
-
+const minuteList= ['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35','36','37','38','39','40','41','42','43','44','45','46','47','48','49','50','51','52','53','54','55','56','57','58','59', ];
+const morningOrNight= ['AM', 'PM'];
+const forHours= ['0','1','2','3','4','5','6','7','8','9','10','11','12',];
+const forMinutes= ['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35','36','37','38','39','40','41','42','43','44','45','46','47','48','49','50','51','52','53','54','55','56','57','58','59',];
 
 export default class FocusSetModal extends React.Component {
   constructor (props) {
-    super(props)
+
+    super(props);
     this.state = {
       until:true,
       selectedItem1: 0,
@@ -84,7 +85,6 @@ export default class FocusSetModal extends React.Component {
       return 0;
     }
   }
-
 
   setFinalTime() {
     /*
@@ -166,21 +166,20 @@ export default class FocusSetModal extends React.Component {
   setTime(toSet){
 
 
-
-
     this.modHandler();
   }
 
-  enterTime(){
+
+  async enterTime(){
 
     //TODO need usable persistent global storage before this can be implemented
-    /*
+      var testSeconds = this.setFinalTime();
+      //put the seconds into asyncstorage as a string
+      await AsyncStorage.setItem('Time', JSON.stringify(testSeconds));
+      await AsyncStorage.setItem('AlreadySet', 'true');
 
-
-
-
-    */
-    this.modHandler();
+      global.pickerClosed = true;
+      this.modHandler();
   }
 
   render () {
@@ -190,7 +189,6 @@ export default class FocusSetModal extends React.Component {
     let uColor = this.state.until ? Colors.iconPrimary : 'transparent' ;
     let fColor = this.state.until ? 'transparent' : Colors.iconPrimary;
 
-    var transeTime = this.setFinalTime();
     return (
       <View style={styles.protoModal}>
 

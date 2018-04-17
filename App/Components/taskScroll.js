@@ -16,7 +16,6 @@ import {TaskCard} from "./taskCard";
 import { Task } from '../dataStructs/Task'
 var sWidth = Dimensions.get('window').width;
 
-
 //testing variables
 const currTime = Math.floor(Date.now()/1000);
 const Days = 86400;
@@ -30,8 +29,6 @@ const currenttasks = [
   new Task(1,'School',currTime + 5*Days, -1,'Class 101 Quiz','Topics:\n   Essays\n   Essay-like assignments\n   How to avoid drowning in fountains','Sections 4.2 6.8',false,0),
   new Task(0,'Personal',currTime + 50*Days, -1,'Invade Quebec','Need weapons that can handle maple syrup exposure\nEh?','The one in Canada',false,0),
 ]
-
-
 
 export class TaskScroll extends React.Component{
 

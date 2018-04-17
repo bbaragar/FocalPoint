@@ -49,8 +49,6 @@ export class TimerCountdown extends React.Component {
             this.tick();
         }
 
-
-
     }
 
     componentWillUnmount() {

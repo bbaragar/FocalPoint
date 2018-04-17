@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
-    View,
-    StyleSheet, Text, Dimensions, TouchableHighlight,
+    View, StatusBar,
+    StyleSheet, Text, Dimensions, TouchableHighlight, AsyncStorage,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import {Colors} from "../Assets/styleConfig";
@@ -12,9 +12,18 @@ import { StackNavigator } from 'react-navigation';
 let sWidth = Dimensions.get('window').width;
 let sLength = Dimensions.get('window').height;
 
+var rememberSettings = "";
 class taskSC extends React.Component {
+
+
     static navigationOptions = { header: null };
     constructor(props) {
+        rememberSettings = JSON.stringify(AsyncStorage.getItem('AlreadySet'));
+
+        if (rememberSettings.contains('t')) {
+            global.pickerClosed = true;
+        }
+
         super(props);
         this.state = {
             finished: false,

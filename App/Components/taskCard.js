@@ -98,7 +98,6 @@ export class TaskCard extends React.Component {
 
     var rtrn = 'Due in: '
 
-
     if(dueIn >=604800){
       rtrn = rtrn + weeks + 'w ';
       if(weeks < 3){
@@ -126,15 +125,11 @@ export class TaskCard extends React.Component {
 
 
 /*
-
-
 chevron-circle-up
 exclamation-circle
 minus-circle
 chevron-circle-down
  */
-
-
   render () {
         const priority = this.priorityColor();
         const category = this.props.task.category;

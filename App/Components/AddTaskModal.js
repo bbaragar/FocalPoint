@@ -120,7 +120,9 @@ const styles = StyleSheet.create({
   },
 
   clickAround:{
+
     //position:'absolute',
+
     width: sWidth,
     height:sLength,
     alignItems: 'center',

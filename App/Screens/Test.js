@@ -23,8 +23,6 @@ class test extends React.Component {
     this.setState({modalVisible: false});
   }
 
-
-
   render() {
     return (
       <View style={{marginTop: 22}}>
