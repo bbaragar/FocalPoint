@@ -24,7 +24,7 @@ class Picking extends React.Component {
         this.closeMod = this.closeMod.bind(this);
 
         this.state = {
-            modalVisible: !global.cranky,
+            modalVisible: !global.pickerClosed,
         };
 
     }

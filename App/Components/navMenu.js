@@ -71,7 +71,7 @@ export class NavMenu extends React.Component{
     _navPress2(){
         console.log('Pressed!');}
     _navPress3(){
-        if (!global.cranky) {
+        if (!global.pickerClosed) {
             NavigationService.navigate('PickTime');
         }
         else {

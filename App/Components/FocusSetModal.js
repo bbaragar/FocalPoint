@@ -18,8 +18,8 @@ import {WheelPicker} from 'react-native-wheel-picker-android';
 import FadeInView from './FadeInView'
 import NavigationService from "../NavigationService";
 
-var sWidth = Dimensions.get('window').width
-var sLength = Dimensions.get('window').height
+var sWidth = Dimensions.get('window').width;
+var sLength = Dimensions.get('window').height;
 var testSeconds = 0;
 
 const hourList= ['12', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'];
@@ -185,7 +185,7 @@ export default class FocusSetModal extends React.Component {
       await AsyncStorage.setItem('Time', JSON.stringify(testSeconds));
       await AsyncStorage.setItem('AlreadySet', 'true');
 
-      global.cranky = true;
+      global.pickerClosed = true;
       this.modHandler();
   }
 

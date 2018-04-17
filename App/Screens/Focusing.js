@@ -21,7 +21,6 @@ var sWidth = Dimensions.get('window').width;
 var sLength = Dimensions.get('window').length;
 
 var storageSecondsString = " k";
-var rememberSettings = "";
 var storageSecondsInt = 0;
 
 class focusingSC extends React.Component {
@@ -31,51 +30,50 @@ class focusingSC extends React.Component {
   constructor(props) {
     super(props);
 
-      //this.closeMod=this.closeMod.bind(this);
-      this.state = {
-          finished: false,
-          elapsed:0,
-          startTime: Math.floor(Date.now() / 1000),
-          endTime: 500 + Math.floor(Date.now() / 1000),
-          difference: (500 + Math.floor(Date.now() / 1000)) - (Math.floor(Date.now() / 1000)),
-          percentFill: 0,
-          Remaining: 0,
-          seconds:0,
-          'Time': this.grabVals(),
-          nextText:" Until Break",
-          modalVisible: !global.cranky,
-      };
+    //this.closeMod=this.closeMod.bind(this);
+    this.state = {
+        finished: false,
+        elapsed:0,
+        startTime: Math.floor(Date.now() / 1000),
+        endTime: Math.floor(Date.now() / 1000),
+        difference: (Math.floor(Date.now() / 1000)) - (Math.floor(Date.now() / 1000)),
+        percentFill: 0,
+        Remaining: 0,
+        seconds:0,
+        'Time': this.grabStorage(),
+        nextText:" Until Break",
+        modalVisible: !global.pickerClosed,
+    };
 
-      storageSecondsString = JSON.stringify(this.grabVals());
+    storageSecondsString = JSON.stringify(this.grabStorage());
 
-      storageSecondsString = JSON.stringify(this.state.Time);
-      storageSecondsInt = 0;
+    storageSecondsString = JSON.stringify(this.state.Time);
+    storageSecondsInt = 0;
 
-      var decimalPlace = 1;
-      for (var i = 0; i < storageSecondsString.length; i++) {
-          decimalPlace = 1;
-          if (!Number.isNaN(parseInt(storageSecondsString.charAt(i)))) {
-              for (var j = i + 1; j < storageSecondsString.length; j++) {
-                  if (Number.isNaN(parseInt(storageSecondsString.charAt(j)))) {
-                      break;
-                  }
-                  else {
-                      decimalPlace *= 10;
-                  }
-              }
-              storageSecondsInt += (parseInt(storageSecondsString.charAt(i))) * decimalPlace;
-          }
-      }
-      this.state.Time = storageSecondsInt;
-      this.state.endTime = this.state.Time + Math.floor(Date.now() / 1000);
-      this.state.startTime = Math.floor(Date.now() / 1000);
-      this.state.difference = this.state.endTime - this.state.startTime;
+    var decimalPlace = 1;
+    for (var i = 0; i < storageSecondsString.length; i++) {
+        decimalPlace = 1;
+        if (!Number.isNaN(parseInt(storageSecondsString.charAt(i)))) {
+            for (var j = i + 1; j < storageSecondsString.length; j++) {
+                if (Number.isNaN(parseInt(storageSecondsString.charAt(j)))) {
+                    break;
+                }
+                else {
+                    decimalPlace *= 10;
+                }
+            }
+            storageSecondsInt += (parseInt(storageSecondsString.charAt(i))) * decimalPlace;
+        }
+    }
+    this.state.Time = storageSecondsInt;
+    this.state.endTime = this.state.Time + Math.floor(Date.now() / 1000);
+    this.state.startTime = Math.floor(Date.now() / 1000);
+    this.state.difference = this.state.endTime - this.state.startTime;
 
       //TODO Switch "global.-----" to using async storage or another global writable variable
-
   }
 
-  async grabVals() {
+  async grabStorage() {
       this.setState({
           'Time': await AsyncStorage.getItem('Time'),
           finished: false,
@@ -87,7 +85,7 @@ class focusingSC extends React.Component {
           Remaining: 0,
           seconds: 0,
           nextText: "Until Break",
-          modalVisible: !global.cranky,
+          modalVisible: !global.pickerClosed,
       });
 
       hailMary = JSON.stringify(JSON.parse(this.state.Time));
@@ -131,7 +129,7 @@ class focusingSC extends React.Component {
     //console.log('update')
   }
 
-  tick() {
+  async tick() {
     let timeStamp = Math.floor(Date.now()/1000);
 
     let elapsed = timeStamp - this.state.startTime;
@@ -152,7 +150,9 @@ class focusingSC extends React.Component {
       elapsed: elapsed,
       Remaining:remaining,
       seconds: seconds,
-    })
+    });
+
+  await AsyncStorage.setItem('Time', JSON.stringify(this.state.Remaining));
 
   }
 
@@ -174,6 +174,7 @@ class focusingSC extends React.Component {
   countDown(){
 
     if(this.state.finished){
+        global.pickerClosed = false;
       return "Done!";
     }else {
       return this.getFormattedTime(this.state.Remaining);
@@ -186,7 +187,7 @@ class focusingSC extends React.Component {
     this.setState({
       finished: true,
     });
-    global.cranky = false;
+    global.pickerClosed = false;
     AsyncStorage.setItem('AlreadySet', 'false');
   }
 

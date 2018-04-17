@@ -21,7 +21,7 @@ class taskSC extends React.Component {
         rememberSettings = JSON.stringify(AsyncStorage.getItem('AlreadySet'));
 
         if (rememberSettings.contains('t')) {
-            global.cranky = true;
+            global.pickerClosed = true;
         }
 
         super(props);
