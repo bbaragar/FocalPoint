@@ -12,6 +12,7 @@ import { StackNavigator } from 'react-navigation';
 let sWidth = Dimensions.get('window').width;
 let sLength = Dimensions.get('window').height;
 
+//this variable uses async to remember the picker status.
 var rememberSettings = "";
 class taskSC extends React.Component {
 

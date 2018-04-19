@@ -12,6 +12,7 @@ import focusingSC from './Screens/Focusing'
 import taskSC from './Screens/Tasks'
 import test from './Screens/Test'
 import Picking from './Screens/PickTime';
+import TaskPick from './Screens/PickTask';
 import NavigationService from './NavigationService'
 
 
@@ -22,6 +23,9 @@ const TopLevelNavigator = StackNavigator(
     },
       PickTime: {
         screen: Picking
+      },
+      PickTask: {
+        screen: TaskPick
       },
     //for use when testing a new screen or component
     Test: {
