@@ -10,8 +10,10 @@ BUGS TO WATCH:
 * There is a small bug with the picker re-appearing if you’ve done like 3 or 4 runs. Probably something to do with my boolean checks.
 
 
-
 -------------------
+
+
+04/15/2018
 NEW FEATURES:
 * Timer is now connected to Picker. When you select a Time, async storage gives the timer that data.
 * Drop-down menu can only be selected before a run or after a run. You may select a new time before you've started one, or once you complete one.
