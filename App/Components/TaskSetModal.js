@@ -136,7 +136,6 @@ export default class TaskSetModal extends React.Component {
         this.modHandler();
         NavigationService.navigate('Tasks');
     }
-
     render () {
         let pickerProps ={style: styles.pickerStyle, isCurved: false,isCyclic:true, isAtmospheric:true, visibleItemCount:3, renderIndicator:true, indicatorColor: 'grey',
             itemTextColor: 'black',
