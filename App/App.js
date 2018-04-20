@@ -14,6 +14,8 @@ import test from './Screens/Test'
 import Picking from './Screens/PickTime';
 import TaskPick from './Screens/PickTask';
 import NavigationService from './NavigationService'
+import comingSoon from './Screens/ComingSoon'
+
 
 
 const TopLevelNavigator = StackNavigator(
@@ -33,6 +35,9 @@ const TopLevelNavigator = StackNavigator(
     },
     Focus: {
       screen: focusingSC
+    },
+    ComingSoon:{
+      screen: comingSoon
     }
 
   },
@@ -41,6 +46,7 @@ const TopLevelNavigator = StackNavigator(
   }
 );
 
+
 //for debugging
 const testTime = Math.floor(Date.now() / 1000);
 const testLength = 5400;
@@ -48,11 +54,9 @@ const testLength = 5400;
 export default class App extends React.Component {
   constructor(){
     super();
-    global.isSet = false;
-    global.startTime;
-    global.endTime;
-    global.nextText = ' Until Break' ;
+
   }
+
 
   render () {
     return <TopLevelNavigator

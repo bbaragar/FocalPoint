@@ -19,14 +19,60 @@ var sWidth = Dimensions.get('window').width
 var sLength = Dimensions.get('window').height
 
 
+const hourList= ['12', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'];
+const minuteList= ['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35','36','37','38','39','40','41','42','43','44','45','46','47','48','49','50','51','52','53','54','55','56','57','58','59', ];
+const morningOrNight= ['AM', 'PM'];
+
 export default class AddTaskModal extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
       nameIn:'',
       descriptIn:'',
+
+      dateShow: false,
+      hourSelect: 11,
+      minuteSelect:59,
+      ampmSelect:'PM',
+
+
+
+
+      dateText: " Due Date",
     }
   };
+
+  currentPickerTime(hmt){
+    if(hmt === 0){
+      let offset = new Date().getTimezoneOffset()/60;
+      let time = (Math.floor(Date.now()/3600000)- offset)%12;
+      return time;
+    }else if(hmt ===1){
+      let offset = new Date().getTimezoneOffset();
+      let time = Math.floor(Date.now()/60000)%60;
+
+      return time;
+    }else if(hmt ===2){
+      let offset = new Date().getTimezoneOffset()/60;
+      let time = Math.floor(Date.now()/3600000 - offset)%24;
+
+      //probably doesn't work correctly when current time is noon
+      if(time>12){
+        return 1;
+      }else{
+        return 0;
+      }
+    }else{
+      return 0;
+    }
+  }
+
+
+
+
+
+
+
 
 
   modHandler(){
@@ -34,7 +80,9 @@ export default class AddTaskModal extends React.Component {
   }
 
   render () {
-
+    let pickerProps ={style: styles.pickerStyle, isCurved: false,isCyclic:true, isAtmospheric:true, visibleItemCount:3, renderIndicator:true, indicatorColor: 'grey',
+      itemTextColor: 'black',
+    };
     return (
       <View style={styles.protoModal}>
 
@@ -50,7 +98,7 @@ export default class AddTaskModal extends React.Component {
                       keyboardShouldPersistTaps={'handled'}>
             <View style={{flex:1, marginHorizontal:6,}}>
               <TextInput
-                style={{height: 40, backgroundColor: '#e6e6e6',}}
+                style={{height: 40, backgroundColor: '#e6e6e6',borderRadius:5}}
                 underlineColorAndroid={'transparent'}
                 autoFocus={true}
                 placeholder={"Name"}
@@ -61,9 +109,9 @@ export default class AddTaskModal extends React.Component {
               <Text> </Text>
               <TextInput
                 ref={(input) => { this.descInput = input; }}
-                style={{ height: 40, backgroundColor: '#e6e6e6',}}
+                style={{ height: 40, backgroundColor: '#e6e6e6',borderRadius:5}}
                 underlineColorAndroid={'transparent'}
-                placeholder={"description"}
+                placeholder={"Description"}
                 onChangeText={(descriptIn) => this.setState({descriptIn})}
                 value={this.state.descriptIn}>
               </TextInput>
@@ -73,7 +121,87 @@ export default class AddTaskModal extends React.Component {
                 time picker
 
                 make expanding from single line
+                <DatePicker></DatePicker>
+
                  */}
+
+                 <Animated.View
+                   style={{
+                     flex:1,
+                     height: 40,
+                     flexDirection: 'row',
+                     alignSelf: 'center',
+                     alignItems: 'center',
+                     backgroundColor: '#e6e6e6',
+                     borderRadius:5,
+                   }}
+                   onLayout={this._setMinHeight.bind(this)}
+                   >
+
+                   <TouchableHighlight style={{ flex:1}}>
+                     <Text style={{color:'grey'}}>{this.state.dateText}</Text>
+                   </TouchableHighlight>
+
+
+
+                 </Animated.View>
+
+
+               {/*
+              <View
+                style={{
+                  flex:1,
+                  paddingTop:20,
+                  flexDirection: 'row',
+                  alignSelf: 'center',
+                  alignItems: 'center',
+                  backgroundColor: '#e6e6e6',
+                  borderRadius:5,
+                }}>
+                <WheelPicker
+                  {...pickerProps}
+                  data={hourList}
+                  selectedItemPosition={this.currentPickerTime(0)}
+                  onItemSelected={(event)=>{this.setState({hourSelect: event.position})}}>
+                </WheelPicker>
+                <Text style={{fontSize: 25}}>:</Text>
+                <WheelPicker
+                  {...pickerProps}
+                  data={minuteList}
+                  selectedItemPosition={this.currentPickerTime(1)}
+                  onItemSelected={(event)=>{this.setState({minuteSelect: event.position})}}>
+                </WheelPicker>
+                <Text style={{fontSize: 25}}> </Text>
+                <WheelPicker
+                  {...pickerProps}
+                  data={morningOrNight}
+                  selectedItemPosition={this.currentPickerTime(2)}
+                  isCyclic={false}
+                  onItemSelected={(event)=>{this.setState({ampmSelect: event.position})}}>
+                </WheelPicker>
+                <View style={[styles.pickerStyle,{justifyContent: 'space-around'}]}>
+                  <TouchableHighlight
+                    style={styles.shortButton}
+                    onPress={ ()=> {this.modHandler()}}
+                    underlayColor = {Colors.iconPrimary}>
+                    <Text  style={styles.buttonText}>EOD</Text>
+                  </TouchableHighlight>
+
+                  <TouchableHighlight
+                    style={styles.shortButton}
+                    onPress={ ()=> {this.modHandler()}}
+                    underlayColor = {Colors.iconPrimary}>
+                    <Text  style={styles.buttonText}>OK</Text>
+                  </TouchableHighlight>
+                </View>
+
+              </View>
+              */}
+
+
+
+
+
 
 
 
@@ -102,6 +230,12 @@ export default class AddTaskModal extends React.Component {
     )
   }
 }
+
+
+AddTaskModal.propTypes = {
+  closeModal: PropTypes.func,
+};
+
 
 const styles = StyleSheet.create({
   protoModal: {
@@ -164,11 +298,31 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
+  shortButton:{
+
+    //bottom:10,
+
+    borderColor: Colors.iconPrimary,
+    borderWidth: 2,
+    //marginHorizontal:20,
+    height: 40,
+    //width: 90,
+    borderRadius:8,
+    backgroundColor: Colors.iconPrimary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+
   buttonText:{
     //fontWeight: 'bold',
     fontSize: 16,
     color:'black',
   },
 
-
+  pickerStyle: {
+    width: 50,
+    height: 120,
+    marginHorizontal: 10,
+  },
 });

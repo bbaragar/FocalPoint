@@ -12,8 +12,52 @@ import {
 } from 'react-native'
 import {Colors} from '../Assets/styleConfig'
 import {Task} from '../dataStructs/Task'
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon  from 'react-native-vector-icons/FontAwesome';
+import MatIcon  from 'react-native-vector-icons/MaterialCommunityIcons';
+import PropTypes from 'prop-types';
 var sWidth = Dimensions.get('window').width
+
+export class CardButton extends React.Component {
+  static props = {
+    OnPress: PropTypes.func.isRequired,
+    IconName: PropTypes.string,
+    Big: PropTypes.bool,
+    Selected: PropTypes.bool,
+  }
+  render() {
+    const  {IconName,OnPress} = this.props;
+    const size = 22
+    return(
+      <TouchableHighlight onPress={OnPress.bind(this)}  underlayColor={Colors.buttonHighlight}  style = {styles.Button}>
+        <MatIcon name ={IconName} size={size} color= {Colors.iconPrimary} style = {styles.Icons}/>
+      </TouchableHighlight>
+    );
+  }
+}
+
+export class CardMenu extends React.Component {
+
+  //edit task
+  //add notes
+  //focus
+  _buttonPress1(){
+    console.log('Pressed!');}
+  _buttonPress2(){
+    console.log('Pressed!');}
+  _buttonPress3(){
+    console.log('Focus');}
+
+  render() {
+    return (
+      <View style = {styles.navBar}>
+        <CardButton OnPress={this._buttonPress1} IconName= 'border-color'/>
+        <CardButton OnPress={this._buttonPress2} IconName= 'timer-sand'/>
+        <CardButton OnPress={this._buttonPress3} IconName= 'note-outline'/>
+      </View>
+    );
+  }
+}
+
 
 export class TaskCard extends React.Component {
   constructor (props) {
@@ -161,7 +205,10 @@ chevron-circle-down
             <View style={{'flex': 1, 'marginTop': 45, flexDirection:'column',}}>
 
               <Text style={styles.noteText}>{notes}</Text>
-
+              <View style={{alignSelf:'center', width:sWidth - 50
+                ,bottom:0,position:'absolute'}}>
+                <CardMenu ></CardMenu>
+              </View>
 
             </View>
           </Animated.View>
@@ -209,7 +256,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     // BorderWidth: 2,
     paddingTop: 45,
-    paddingBottom: 5,
+    //paddingBottom: 0,
     width: sWidth
 
     /*
@@ -228,6 +275,7 @@ const styles = StyleSheet.create({
      * height: 50,
      */
     padding: 10,
+    paddingBottom:0,
     width: sWidth - 50
     // ZIndex: 2,
   },
@@ -250,8 +298,30 @@ const styles = StyleSheet.create({
   noteText:{
     color: 'black',
     fontSize: 15,
-  }
+  },
 
+  navBar:{
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    //height:75,
+    flexDirection:'row',
+   // backgroundColor:'grey',
+  },
+  Button: {
+    flex: 0,
+    //width: 70,
+    height: 50,
+    width:50,
+    // borderColor: 'black',
+    //borderWidth:1,
+    //borderBottomLeftRadius:40,
+    //borderBottomRightRadius:40,
+    borderRadius:20,
+    alignItems: 'center',
+    //paddingTop:10,
+    justifyContent: 'center',
+
+  },
 })
 /*
 TaskCard.propTypes={

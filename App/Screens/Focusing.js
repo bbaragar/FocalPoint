@@ -16,6 +16,7 @@ import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import ProgressBar from 'react-native-progress/Bar';
 import  FocusSetModal from '../Components/FocusSetModal'
 
+
 var hailMary;
 var sWidth = Dimensions.get('window').width;
 var sLength = Dimensions.get('window').length;
@@ -25,27 +26,27 @@ var storageSecondsInt = 0;
 
 class focusingSC extends React.Component {
   static navigationOptions = { header: null };
-  timer=null;
+
 
   constructor(props) {
     super(props);
-
-    global.pickerClosed = true;
-    //this.closeMod=this.closeMod.bind(this);
+    this.timer =null;
+    this.closeMod=this.closeMod.bind(this);
     this.state = {
-        finished: false,
+        //finished: true,
         elapsed:0,
-        startTime: Math.floor(Date.now() / 1000),
-        endTime: Math.floor(Date.now() / 1000),
-        difference: (Math.floor(Date.now() / 1000)) - (Math.floor(Date.now() / 1000)),
+        startTime:  global.startTime,
+        endTime: global.endTime,
+        difference: global.endTime-global.startTime,
         percentFill: 0,
-        Remaining: 0,
-        seconds:0,
-        'Time': this.grabStorage(),
+        Remaining: 1,
+        seconds:59,
+        //'Time': this.grabStorage(),
         nextText:" Until Break",
-        modalVisible: !global.pickerClosed,
-    };
+        modalVisible: !global.isSet,
 
+    };
+/*
     storageSecondsString = JSON.stringify(this.grabStorage());
 
     storageSecondsString = JSON.stringify(this.state.Time);
@@ -66,14 +67,15 @@ class focusingSC extends React.Component {
             storageSecondsInt += (parseInt(storageSecondsString.charAt(i))) * decimalPlace;
         }
     }
-    this.state.Time = storageSecondsInt;
+
+    //this.state.Time = storageSecondsInt;
     this.state.endTime = this.state.Time + Math.floor(Date.now() / 1000);
     this.state.startTime = Math.floor(Date.now() / 1000);
     this.state.difference = this.state.endTime - this.state.startTime;
-
-      //TODO Switch "global.-----" to using async storage or another global writable variable
+*/
+        //TODO Switch "global.-----" to using async storage or another global writable variable
   }
-
+/*
   async grabStorage() {
       this.setState({
           'Time': await AsyncStorage.getItem('Time'),
@@ -117,32 +119,44 @@ class focusingSC extends React.Component {
       hailMary = storageSecondsInt;
       return hailMary;
   }
+  */
+
   componentDidMount() {
-    timer = setInterval(this.tick.bind(this), 1000);
+    console.log(global.isSet)
+    console.log("mount")
+    if(global.isSet){
+      this.start();
+    }
+
+
+    }
+  start(){
+    this.timer = setInterval(this.tick.bind(this), 1000);
     this.tick();
+
   }
 
   componentWillUnmount() {
-    this.clearInterval(this.timer);
+    clearInterval(this.timer);
   }
 
   componentDidUpdate() {
     //console.log('update')
   }
 
-  tick() {
+  tick () {
 
-    let timeStamp = Math.floor(Date.now()/1000);
+    let timeStamp = Math.floor(Date.now() / 1000);
 
-    let elapsed = timeStamp - this.state.startTime;
+    let elapsed = timeStamp - global.startTime;
 
-    let percent = Math.floor((elapsed/this.state.difference)*100 );
+    let percent = Math.floor((elapsed / (this.state.difference+1)) * 100);
 
-    let remaining = this.state.endTime-Math.floor(Date.now()/1000)
+    let remaining = global.endTime - Math.floor(Date.now() / 1000)
 
     let seconds = remaining % 60;
 
-    if(remaining < 1){
+    if (remaining < 1 && global.isSet) {
 
       this.toggleFinished();
     }
@@ -150,11 +164,11 @@ class focusingSC extends React.Component {
     this.setState({
       percentFill: percent,
       elapsed: elapsed,
-      Remaining:remaining,
+      Remaining: remaining,
       seconds: seconds,
     });
 
-  await AsyncStorage.setItem('Time', JSON.stringify(this.state.Remaining));
+    //await AsyncStorage.setItem('Time', JSON.stringify(this.state.Remaining));
 
   }
 
@@ -173,9 +187,8 @@ class focusingSC extends React.Component {
   }
 
   countDown(){
+    if(this.state.Remaining<1){
 
-    if(this.state.finished){
-        global.pickerClosed = false;
       return "0:00"
     }else {
       return this.getFormattedTime(this.state.Remaining);
@@ -183,15 +196,26 @@ class focusingSC extends React.Component {
   }
 
 
-  async toggleFinished() {
+  toggleFinished() {
     clearInterval(this.timer);
+    global.isSet = false;
     this.setState({
-      finished: true,
+      percentFill: 0,
+      seconds: 59,
+      Remaining:0,
     });
-    global.pickerClosed = false;
-    await AsyncStorage.setItem('AlreadySet', 'false');
+
+   // await AsyncStorage.setItem('AlreadySet', 'false');
   }
 
+  resetTime(){
+    this.toggleFinished();
+    this.showMod();
+  }
+  endTime(){
+
+    this.toggleFinished();
+  }
 
   showMod() {
     this.setState({modalVisible: true});
@@ -200,6 +224,17 @@ class focusingSC extends React.Component {
   closeMod() {
 
     this.setState({modalVisible: false});
+
+    this.setState({
+      startTime: global.startTime,
+      endTime: global.endTime,
+      difference: global.endTime-global.startTime,
+    })
+
+    if(global.isSet){
+
+      this.start();
+    }
   }
 
   render(){
@@ -211,14 +246,16 @@ class focusingSC extends React.Component {
             visible={this.state.modalVisible}
             onRequestClose={() => {
               alert('Modal has been closed.');
-            }}>
-              <FocusSetModal closeModal={this.closeMod}></FocusSetModal>
+            }}
+            >
+              <FocusSetModal closeModal={this.closeMod}/>
           </Modal>
           <View style={styles.topPart}>
               <NavMenu></NavMenu>
               <View style={styles.protoCard}>
                   <View style={styles.nextCard}>
-                      <Text>{"Up Next: \n                 Placeholder"}</Text>
+                    {/*"Up Next: \n                 Placeholder"*/}
+                      <Text>{global.zwrt}</Text>
                   </View>
               </View>
               <View style={styles.protoCard}>
@@ -227,7 +264,7 @@ class focusingSC extends React.Component {
                   </View></View>
           </View>
           <View style={styles.bottomShelf }>
-              <View style={{height:20}} ></View>
+              <View style={{height: 20}} />
               <AnimatedCircularProgress
                 size={220}
                 width={10}
@@ -256,6 +293,23 @@ class focusingSC extends React.Component {
                   )
                 }
               </AnimatedCircularProgress>
+            <View style={{ flex:1, flexDirection:'row', alignItems: 'center', justifyContent: 'space-around'}}>
+
+              <TouchableHighlight
+                style={styles.button}
+                onPress={ ()=> {this.resetTime()}}
+                underlayColor = {Colors.iconPrimary}>
+                <Text style={styles.buttonText}>Reset</Text>
+              </TouchableHighlight>
+
+              <TouchableHighlight
+                style={styles.button}
+                onPress={ ()=> {this.endTime()}}
+                underlayColor = {Colors.iconPrimary}>
+                <Text style={styles.buttonText}>End</Text>
+              </TouchableHighlight>
+
+            </View>
           </View>
       </LinearGradient>
     )
@@ -349,6 +403,16 @@ const styles = StyleSheet.create({
   timerSugarText:{
     paddingTop: 10,
     fontSize: 20,
-  }
-
+  },
+  button:{
+    borderColor: Colors.iconPrimary,
+    borderWidth: 2,
+    marginHorizontal:20,
+    height: 35,
+    width: 80,
+    borderRadius:8,
+    alignItems: 'center',
+    backgroundColor: Colors.iconPrimary,
+    justifyContent: 'center',
+  },
 });

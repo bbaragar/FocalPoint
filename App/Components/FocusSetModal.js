@@ -33,6 +33,7 @@ export default class FocusSetModal extends React.Component {
   constructor (props) {
 
     super(props);
+
     this.state = {
       until:true,
       selectedItem1: 0,
@@ -98,9 +99,11 @@ export default class FocusSetModal extends React.Component {
       if (hourList[this.state.selectedItem1] == '12') {
         hours = 0;
       } else {
+        console.log(this.state.selectedItem1)
         hours =
-          Number.parseInt(hourList[this.state.selectedItem1], 10) *
+          (Number.parseInt(hourList[this.state.selectedItem1], 10)) *
           3600;
+        console.log(hours)
       }
 
       var minutes =
@@ -124,13 +127,16 @@ export default class FocusSetModal extends React.Component {
     } else {
       //end conditions for until option
 
-      // if user selects the "FOR" option, return (hours * 3600) + (minutes * 60) to get second count.
-      return (
-        Number.parseInt(forMinutes[this.state.selectedItem2], 10) *
+      let timefor = Number.parseInt(forMinutes[this.state.selectedItem2], 10) *
         60 +
         Number.parseInt(forHours[this.state.selectedItem1], 10) *
         3600
-      );
+
+
+      // if user selects the "FOR" option, return (hours * 3600) + (minutes * 60) to get second count.
+      return timefor
+
+      ;
     }
   }
 
@@ -165,12 +171,10 @@ export default class FocusSetModal extends React.Component {
   }
 
   setTime(toSet){
-
-
     this.modHandler();
   }
 
-
+/*
   async enterTime(){
 
     //TODO need usable persistent global storage before this can be implemented
@@ -188,6 +192,16 @@ export default class FocusSetModal extends React.Component {
           this.modHandler();
       }
   }
+*/
+
+  enterTime(){
+    global.startTime = Math.floor(Date.now() / 1000);
+    global.endTime = Math.floor(Date.now() / 1000)+ this.setFinalTime()
+    global.isSet = true;
+    console.log(global.isSet)
+    this.modHandler();
+  }
+
 
   render () {
     let pickerProps ={style: styles.pickerStyle, isCurved: false,isCyclic:true, isAtmospheric:true, visibleItemCount:3, renderIndicator:true, indicatorColor: 'grey',
@@ -317,8 +331,7 @@ export default class FocusSetModal extends React.Component {
                   <WheelPicker
                     {...pickerProps}
                     data={forMinutes}
-                    onItemSelected={(event)=>{this.setState({selectedItem12: event.position})}}>
-                  </WheelPicker>
+                    onItemSelected={(event)=>{this.setState({selectedItem2: event.position})}}/>
 
                 </View>
                 <Text style={{fontWeight: 'bold', height: 20 }}>Mins</Text>

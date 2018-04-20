@@ -67,15 +67,15 @@ NavButton.defaultProps={
 export class NavMenu extends React.Component{
 
     _navPress1(){
-        console.log('Pressed!');}
+      NavigationService.navigate('ComingSoon');}
     _navPress2(){
-        console.log('Pressed!');}
+      NavigationService.navigate('ComingSoon');}
     _navPress3(){
         NavigationService.navigate('Focus');}
     _navPress4(){
         NavigationService.navigate('Tasks');}
     _navPress5(){
-        console.log('Pressed!');}
+        NavigationService.navigate('ComingSoon');}
 
 
     render() {

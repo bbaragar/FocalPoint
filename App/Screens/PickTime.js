@@ -1,19 +1,10 @@
 import React, { Component } from 'react';
 import {
-    Animated,
-    StyleSheet,
-    AsyncStorage,
-    Text,
-    Dimensions,
-    Alert,
+
     View,
-    TouchableHighlight, Modal,
+ Modal,
 } from 'react-native'
-import {Colors} from "../Assets/styleConfig";
-import LinearGradient from "react-native-linear-gradient";
-import {NavMenu} from "../Components/navMenu";
-import { AnimatedCircularProgress } from 'react-native-circular-progress';
-import ProgressBar from 'react-native-progress/Bar';
+
 import  FocusSetModal from '../Components/FocusSetModal'
 
 class Picking extends React.Component {
