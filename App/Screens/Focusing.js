@@ -30,6 +30,7 @@ class focusingSC extends React.Component {
   constructor(props) {
     super(props);
 
+    global.pickerClosed = true;
     //this.closeMod=this.closeMod.bind(this);
     this.state = {
         finished: false,
@@ -182,13 +183,13 @@ class focusingSC extends React.Component {
   }
 
 
-  toggleFinished() {
+  async toggleFinished() {
     clearInterval(this.timer);
     this.setState({
       finished: true,
     });
     global.pickerClosed = false;
-    AsyncStorage.setItem('AlreadySet', 'false');
+    await AsyncStorage.setItem('AlreadySet', 'false');
   }
 
 

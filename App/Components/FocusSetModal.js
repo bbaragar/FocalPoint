@@ -7,6 +7,7 @@ import {
   AsyncStorage,
   Dimensions,
   View,
+    Alert,
   Platform,
   ViewPropTypes,
   TouchableHighlight, ScrollView, Touchable
@@ -175,11 +176,17 @@ export default class FocusSetModal extends React.Component {
     //TODO need usable persistent global storage before this can be implemented
       var testSeconds = this.setFinalTime();
       //put the seconds into asyncstorage as a string
-      await AsyncStorage.setItem('Time', JSON.stringify(testSeconds));
-      await AsyncStorage.setItem('AlreadySet', 'true');
 
-      global.pickerClosed = true;
-      this.modHandler();
+      if (testSeconds <= 0) {
+        Alert.alert("You cannot select 0 time; pick again!");
+      }
+      else {
+          await AsyncStorage.setItem('Time', JSON.stringify(testSeconds));
+          await AsyncStorage.setItem('AlreadySet', 'true');
+
+          global.pickerClosed = true;
+          this.modHandler();
+      }
   }
 
   render () {
@@ -449,4 +456,4 @@ const styles = StyleSheet.create({
   }
 
 
-})
+});

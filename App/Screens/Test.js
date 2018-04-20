@@ -14,7 +14,6 @@ class test extends React.Component {
     };
   }
 
-
   showMod(visible) {
     this.setState({modalVisible: true});
   }

@@ -17,7 +17,7 @@ var sWidth = Dimensions.get('window').width
 
 export class TaskCard extends React.Component {
   constructor (props) {
-    super(props)
+    super(props);
     this.state = {
       task: new Task(2, 'Personal', 1527638400, 1527206400, 'Finish App', 'Important\npurple and teal are dope', 'so much to do', false, 0),
       expanded: true,
@@ -36,10 +36,10 @@ export class TaskCard extends React.Component {
 
   expand () {
     let initialValue = this.state.maxHeight + this.state.minHeight,
-      finalValue = this.state.minHeight
+      finalValue = this.state.minHeight;
 
     this.setState({'expanded': true // Step 2
-    })
+    });
 
     this.state.animation.setValue(initialValue) // Step 3
     Animated.spring( // Step 4
@@ -53,7 +53,7 @@ export class TaskCard extends React.Component {
     let finalValue = this.state.maxHeight + this.state.minHeight
 
     this.setState({'expanded': false // Step 2
-    })
+    });
 
     this.state.animation.setValue(initialValue) // Step 3
     Animated.spring( // Step 4
@@ -75,7 +75,6 @@ export class TaskCard extends React.Component {
 
     switch (this.props.task.priority){
       case 3:
-
         return {color: '#e60000', icon: 'exclamation-circle'};
 
       case 2:

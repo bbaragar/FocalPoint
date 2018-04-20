@@ -12,11 +12,10 @@ import {
 import {Colors} from "../Assets/styleConfig";
 import LinearGradient from "react-native-linear-gradient";
 import {NavMenu} from "../Components/navMenu";
-import { AnimatedCircularProgress } from 'react-native-circular-progress';
-import ProgressBar from 'react-native-progress/Bar';
-import  FocusSetModal from '../Components/FocusSetModal'
 
-class Picking extends React.Component {
+import TaskSetModal from '../Components/TaskSetModal'
+
+class TaskPick extends React.Component {
 
     constructor(props) {
         super(props);
@@ -24,7 +23,7 @@ class Picking extends React.Component {
         this.closeMod = this.closeMod.bind(this);
 
         this.state = {
-            modalVisible: !global.pickerClosed,
+            modalVisible: true,
         };
     }
 
@@ -33,26 +32,24 @@ class Picking extends React.Component {
     }
 
     closeMod() {
-
-        global.pickerClosed = true;
         this.setState({modalVisible: false});
     }
 
     render() {
         return (
             <View>
-            <Modal
-                animationType="fade"
-                transparent={true}
-                visible={this.state.modalVisible}
-                onRequestClose={() => {
-                    alert('Modal has been closed.');
-                }}>
-                <FocusSetModal closeModal={this.closeMod}/>
-            </Modal>
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={this.state.modalVisible}
+                    onRequestClose={() => {
+                        alert('Modal has been closed.');
+                    }}>
+                    <TaskSetModal closeModal={this.closeMod}/>
+                </Modal>
             </View>
         );
     }
 }
 
-export default Picking;
+export default TaskPick;
