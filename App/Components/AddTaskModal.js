@@ -4,6 +4,7 @@ import {
   StyleSheet,
   Text,
   Dimensions,
+  AsyncStorage,
   View,
   Platform,
   ViewPropTypes,
@@ -29,14 +30,13 @@ export default class AddTaskModal extends React.Component {
     this.state = {
       nameIn:'',
       descriptIn:'',
-
+      'Tasks': this.grabTasks(),
       dateShow: false,
       hourSelect: 11,
       minuteSelect:59,
       ampmSelect:'PM',
-
-
-
+      daySelect:0,
+      priority:false,
 
       dateText: " Due Date",
     }
@@ -67,22 +67,137 @@ export default class AddTaskModal extends React.Component {
     }
   }
 
-
-
-
-
-
-
+  setNormal(){
+    this.setState({
+      priority:false
+    })
+  }
+  setPriority(){
+    this.setState({
+      priority:true
+    })
+  }
 
 
   modHandler(){
     this.props.closeModal()
   }
 
+  getCurrentTime() {
+    // Creating variables to hold time.
+    var totalSeconds, date, hour, minutes, seconds;
+
+    // Creating Date() function object.
+    date = new Date();
+
+    // Getting current hour from Date object.
+    hour = date.getHours();
+    totalSeconds = hour * 3600;
+
+    // Getting the current minutes from date object.
+    minutes = date.getMinutes();
+    totalSeconds += minutes * 60;
+
+    //Getting current seconds from date object.
+    seconds = date.getSeconds();
+    totalSeconds += seconds;
+
+    //gives us total seconds to perform arithmetic
+    return totalSeconds;
+  }
+  getTime(){
+    var secondsRequested = 0;
+    var hours;
+
+    if (hourList[this.state.hourSelect] == '12') {
+      hours = 0;
+    } else {
+      hours =
+        (Number.parseInt(hourList[this.state.hourSelect], 10)) *
+        3600;
+    }
+
+    var minutes =
+      Number.parseInt(minuteList[this.state.minuteSelect], 10) *
+      60;
+    var am_or_pm = morningOrNight[this.state.ampmSelect];
+
+    if (am_or_pm == 'PM') {
+      secondsRequested += 12 * 3600; //this accounts for the first 12 hours of the day
+    }
+
+    var days = minuteList[this.state.daySelect]*24*3600;
+
+
+    //adds on requested hours and minutes
+    secondsRequested += hours + minutes+days;
+
+    /* if user requests time within the next day, do additional arithmetic */
+    if (secondsRequested - this.getCurrentTime() < 0) {
+      return secondsRequested + (24 * 3600 - this.getCurrentTime());
+    } else {
+      return secondsRequested - this.getCurrentTime();
+    }
+  }
+
+  addNote(){
+    this.createTask();
+    this.modHandler();
+  }
+  async grabTasks() {
+    try {
+      const test = await AsyncStorage.getItem('TaskList');
+      allTasks = JSON.parse(test);
+    } catch (error) {
+      //add first task if they don't have any tasks
+      const test = await AsyncStorage.setItem('TaskList', JSON.stringify(allTasks));
+      allTasks = JSON.parse(test);
+    }
+
+    return allTasks;
+  }
+
+  async createTask() {
+
+    //find numerical priority inputted by user
+    var priority = this.state.selectedItem1;
+
+    taskName = this.state.nameIn;
+
+    taskDescription = this.state.descriptIn;
+
+    dueDate = this.getTime();
+
+    tpriority = this.state.priority ? 3 : 1;
+
+    //grab current task list to push new task onto it
+    //var taskList = this.grabTasks();
+
+    var newTask = [
+      new Task(tpriority, 'New Task', dueDate, 'Placeholder', taskName, taskDescription, false, 0)
+    ];
+
+    //add new task onto list of all tasks
+    allTasks = allTasks.concat(newTask);
+
+    this.storeTask(newTask);
+  }
+
+  //stores a provided Task object with the other tasks.
+  async storeTask(task) {
+    await AsyncStorage.setItem('TaskList', JSON.stringify(allTasks));
+
+    //test alert
+    //Alert.alert(JSON.stringify(allTasks));
+
+  }
+
   render () {
     let pickerProps ={style: styles.pickerStyle, isCurved: false,isCyclic:true, isAtmospheric:true, visibleItemCount:3, renderIndicator:true, indicatorColor: 'grey',
       itemTextColor: 'black',
     };
+    let uColor = this.state.priority ? Colors.iconPrimary : 'transparent' ;
+    let fColor = this.state.priority ? 'transparent' : Colors.iconPrimary;
     return (
       <View style={styles.protoModal}>
 
@@ -116,6 +231,7 @@ export default class AddTaskModal extends React.Component {
                 value={this.state.descriptIn}>
               </TextInput>
               <Text> </Text>
+
               {/*
                 date picker
                 time picker
@@ -125,29 +241,13 @@ export default class AddTaskModal extends React.Component {
 
                  */}
 
-                 <Animated.View
-                   style={{
-                     flex:1,
-                     height: 40,
-                     flexDirection: 'row',
-                     alignSelf: 'center',
-                     alignItems: 'center',
-                     backgroundColor: '#e6e6e6',
-                     borderRadius:5,
-                   }}
-                   onLayout={this._setMinHeight.bind(this)}
-                   >
 
-                   <TouchableHighlight style={{ flex:1}}>
-                     <Text style={{color:'grey'}}>{this.state.dateText}</Text>
-                   </TouchableHighlight>
+              {/*
+                 <TouchableHighlight style={{ flex:1}}>
+                   <Text style={{color:'grey'}}>{this.state.dateText}</Text>
+                 </TouchableHighlight>
+              */}
 
-
-
-                 </Animated.View>
-
-
-               {/*
               <View
                 style={{
                   flex:1,
@@ -179,6 +279,7 @@ export default class AddTaskModal extends React.Component {
                   isCyclic={false}
                   onItemSelected={(event)=>{this.setState({ampmSelect: event.position})}}>
                 </WheelPicker>
+                {/*
                 <View style={[styles.pickerStyle,{justifyContent: 'space-around'}]}>
                   <TouchableHighlight
                     style={styles.shortButton}
@@ -193,16 +294,66 @@ export default class AddTaskModal extends React.Component {
                     underlayColor = {Colors.iconPrimary}>
                     <Text  style={styles.buttonText}>OK</Text>
                   </TouchableHighlight>
+
                 </View>
+*/}
+              </View>
+              <Text> </Text>
+              <View
+                style={{
+                  flex:1,
+                  paddingTop:20,
+                  flexDirection: 'row',
+                  alignSelf: 'center',
+                  alignItems: 'center',
+                  backgroundColor: '#e6e6e6',
+                  borderRadius:5,
+                }}>
+                <WheelPicker
+                  {...pickerProps}
+                  data={minuteList}
+                  onItemSelected={(event)=>{this.setState({daySelect: event.position})}}>
+                </WheelPicker>
+                <Text>Days away  </Text>
+
+
+
 
               </View>
-              */}
+              <Text> </Text>
+              <View style={styles.segmentButtonView}>
+                <TouchableHighlight
+                  style={{flex:1,alignItems: 'center',backgroundColor: fColor}}
+                  onPress={ ()=> {this.setNormal()}}
+                  underlayColor = {Colors.iconPrimary}>
+                  <Text style={styles.buttonText}>Normal</Text>
+                </TouchableHighlight>
+                <TouchableHighlight
+                  style={{flex:1,alignItems: 'center',backgroundColor: uColor}}
+                  onPress={ ()=> {this.setPriority()}}
+                  underlayColor = {Colors.iconPrimary}>
+                  <Text style={styles.buttonText}>Priority</Text>
+                </TouchableHighlight>
+              </View>
 
 
 
-
-
-
+              <Text> </Text>
+              <Text> </Text>
+              <Text> </Text>
+              <Text> </Text>
+              <Text> </Text>
+              <Text> </Text>
+              <Text> </Text>
+              <Text> </Text>
+              <Text> </Text>
+              <Text> </Text>
+              <Text> </Text>
+              <Text> </Text>
+              <Text> </Text>
+              <Text> </Text>
+              <Text> </Text>
+              <Text> </Text>
 
 
 
@@ -211,7 +362,7 @@ export default class AddTaskModal extends React.Component {
           <View style={{ flexDirection:'row', alignItems: 'center', justifyContent: 'space-around', marginTop:10}}>
             <TouchableHighlight
               style={styles.sButton}
-              onPress={ ()=> {this.modHandler()}}
+              onPress={ ()=> {this.addNote()}}
               underlayColor = {Colors.iconPrimary}>
               <Text  style={styles.buttonText}>Add</Text>
             </TouchableHighlight>
@@ -324,5 +475,15 @@ const styles = StyleSheet.create({
     width: 50,
     height: 120,
     marginHorizontal: 10,
+  },
+  segmentButtonView:{
+
+    height: 30,
+    width: 150,
+    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: Colors.iconPrimary,
+    flexDirection: 'row',
+    alignSelf:'center',
   },
 });

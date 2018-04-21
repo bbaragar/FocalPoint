@@ -83,13 +83,7 @@ export class TaskScroll extends React.Component{
         <ScrollView>
             <NavMenu/>
 
-                <TouchableHighlight
-                    style = {{backgroundColor: 'lavender'}}
-                    onPress = { () => this.openTaskPicker()}
-                >
-                    <Text style = {{fontFamily: 'Courier', textAlign: 'center', paddingBottom: 4, fontSize: 20, color: 'black', fontWeight: 'bold'}}>
-                        Add Task</Text>
-                </TouchableHighlight>
+
 
             {
                 sampleTask.map((Task, index) => (

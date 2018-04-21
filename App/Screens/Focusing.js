@@ -15,7 +15,7 @@ import {NavMenu} from "../Components/navMenu";
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import ProgressBar from 'react-native-progress/Bar';
 import  FocusSetModal from '../Components/FocusSetModal'
-
+import Icon  from 'react-native-vector-icons/FontAwesome';
 
 var hailMary;
 var sWidth = Dimensions.get('window').width;
@@ -254,13 +254,24 @@ class focusingSC extends React.Component {
               <NavMenu></NavMenu>
               <View style={styles.protoCard}>
                   <View style={styles.nextCard}>
-                    {/*"Up Next: \n                 Placeholder"*/}
-                      <Text>{global.zwrt}</Text>
+
+                      <Text>{"Up Next: \n                Functionality coming soon"}</Text>
                   </View>
               </View>
               <View style={styles.protoCard}>
                   <View style={styles.currentCard}>
-                      <Text>placeholder</Text>
+                    <View style = {{'flex': 1, flexDirection:'row', justifyContent:'space-between'}}>
+                      <View style={{flexDirection:'column', flex:1}}>
+                        <Text style={styles.titleText}>Sample</Text>
+                        <Text style={styles.subtitleText}>Hi, I am a sample task!</Text>
+                        <Text style={styles.catText}>misc</Text>
+                      </View>
+                      <View style={{flexDirection:'column'}}>
+                        <Icon name={'exclamation-circle'} color={'#e60000'} size={30} style={{alignSelf: 'flex-end'}}/>
+
+                        <Text style={styles.subtitleText}>{"1d3h"}</Text>
+                      </View>
+                    </View>
                   </View></View>
           </View>
           <View style={styles.bottomShelf }>
@@ -415,4 +426,19 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.iconPrimary,
     justifyContent: 'center',
   },
+  titleText:{
+    color: 'black',
+    fontSize: 20,
+  },
+
+  subtitleText:{
+    color: 'grey',
+    fontSize: 15,
+  },
+
+  catText:{
+    color: Colors.iconPrimary,
+    fontSize: 15,
+  },
+
 });
